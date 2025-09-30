@@ -54,7 +54,6 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
     ).map((periodo) => {
       const { base, oferta } = calcularPrecios(
         tarifa,
-        producto,
         periodo,
         precioMedioOmie,
         feeEnergia
@@ -64,16 +63,16 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
 
     const resultados = { producto, periodos };
 
-    set({ producto, resultados }); // actualiza el store
-    return resultados; // también devuelvo los resultados inmediatamente
+    set({ producto, resultados }); 
+    return resultados;
   },
 
-  setPotencia: (tarifa: string, feePotencia: number, modalidad: string) => {
+  setPotencia: (tarifa: string, feePotencia: number) => {
     if (!tarifa) return null;
 
     const periodos = (["P1","P2","P3","P4","P5","P6"] as Periodo[]).map(
       (periodo) => {
-        const { base, oferta } = calcularPotencia(tarifa, periodo, feePotencia, modalidad);
+        const { base, oferta } = calcularPotencia(tarifa, periodo, feePotencia);
         return {
           periodo,
           basePotencia: base,
