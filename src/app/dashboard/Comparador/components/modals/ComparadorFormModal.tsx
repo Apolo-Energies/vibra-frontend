@@ -50,17 +50,11 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       producto: defaultProducto,
     },
   });
-
-  console.log("defalt porduct: ", defaultProducto);
-  console.log("matil data: ", matilData);
-  console.log("producto: ", matilData?.tarifa?.[0]);
   
   const [feeEnergia, setFeeEnergia] = useState([0]);
   const [feePotencia, setFeePotencia] = useState([0]);
   const [resultadoFactura, setResultadoFactura] = useState<FacturaResult>();
   const { commission } = useCommissionUserStore();
-
-  console.log("comision usuario: ", commission)
 
   const productoSeleccionado = watch("producto");
   const comisionEnergia = commission ? commission/100 : 0 ;

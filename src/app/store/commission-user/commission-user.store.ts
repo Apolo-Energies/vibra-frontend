@@ -6,6 +6,6 @@ interface UserState {
 }
 
 export const useCommissionUserStore = create<UserState>((set) => ({
-  commission: 0.55,
+  commission: 0.0,
   setCommission: (value) => set({ commission: value }),
 }));
