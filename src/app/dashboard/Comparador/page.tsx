@@ -1,4 +1,4 @@
-import { Comparador } from "./Comparador/components/Comparador";
+import { Comparador } from "./components/Comparador";
 
 export default function ComparadorPage() {
   return <Comparador />;

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../buttons/button";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { logout } from "@/actions";
 
 export const UserMenu = () => {
@@ -32,7 +32,7 @@ export const UserMenu = () => {
       {open && (
         <div className="absolute right-0 mt-2 w-48 rounded-md shadow-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
           <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
-            <li
+            {/* <li
               onClick={() => {
                 setOpen(false);
               }}
@@ -49,7 +49,7 @@ export const UserMenu = () => {
             >
               <User className="w-4 h-4" />
               Mi perfil
-            </li>
+            </li> */}
             
             <form
               action={async () => {

@@ -5,7 +5,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   const session = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
-    // cookieName: '__Secure-authjs.session-token',
+    cookieName: '__Secure-authjs.session-token',
   });
 
   const url = req.nextUrl;

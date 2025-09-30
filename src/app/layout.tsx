@@ -14,7 +14,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "APOLO ENERGIES",
+  title: "VIBRA ENERGIES",
   description: "Portal de colaboradores",
 };
 

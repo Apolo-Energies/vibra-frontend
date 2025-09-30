@@ -2,8 +2,9 @@ import axios from "axios";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
 
-export const userLogin = async (apikey: string): Promise<ApiResponse<unknown>> => {
-    if (!apikey) {
+export const userLogin = async (api_key: string): Promise<ApiResponse<unknown>> => {
+    console.log("apikey: ", api_key)
+    if (!api_key) {
       return {
         isSuccess: false,
         displayMessage: "La url no es valida",
@@ -15,8 +16,8 @@ export const userLogin = async (apikey: string): Promise<ApiResponse<unknown>> =
   
     try {
       const response = await ApiManager.post(
-        "/auth/login",
-        { apikey },
+        "/renovae/login",
+        { api_key },
         { withCredentials: false }
       );
   

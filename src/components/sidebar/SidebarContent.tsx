@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 
 import { sidebarItems } from "@/constants/SidebarItems";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import { useSession } from "next-auth/react";
 
 export const SidebarContent = () => {
   const pathname = usePathname();
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   const { data: session, update } = useSession();
   const [sessionUpdated, setSessionUpdated] = useState(false);
 
@@ -24,8 +24,8 @@ export const SidebarContent = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
-  const logoSrc =
-    theme === "dark" ? "/logos/apolologo2.webp" : "/logos/apolologo.webp";
+  // const logoSrc =
+  //   theme === "dark" ? "/logos/vibralogo.webp" : "/logos/vibralogo.webp";
 
   const userRole = session?.user.role || ""; 
  
@@ -36,22 +36,22 @@ export const SidebarContent = () => {
 
   return (
     <div className="w-64 bg-card border-r border-border h-full">
-      <Link
+      {/* <Link
         href="/dashboard"
         className="flex justify-center items-center w-full h-20 py-4 px-2"
       >
         <div className="relative w-full h-full max-w-xs">
           <Image
             src={logoSrc}
-            alt="Apolo Energies"
+            alt="Vibra Energies"
             fill
             style={{ objectFit: "contain" }}
             priority
           />
         </div>
-      </Link>
+      </Link> */}
 
-      <nav className="px-3">
+      <nav className="px-3 pt-10">
         {itemsToRender.map((item, index) => {
           const isSelected = pathname === item.url;
           return (

@@ -1,7 +1,5 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { z } from "zod";
-// import { userLogin } from "./app/services/ApiAuth/auth.service";
 import { jwtDecode } from "jwt-decode";
 import { userLogin } from "./app/services/Auth/auth.service";
 
@@ -12,20 +10,17 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [
     Credentials({
+      name: "API Key",
+      credentials: {
+        api_key: { label: "API Key", type: "text" },
+      },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(credentials): Promise<any | null> {
-        const apiKey =
-          // (req.query?.api_key as string) ??
-          // credentials?.api_key ??
-          process.env.NEXT_PUBLIC_RENOVAE_API_KEY;
-
-        if (!apiKey) {
-          console.error("No se recibió api_key");
-          return null;
-        }
-
+        const apiKey = credentials?.api_key as string;
+        if (!apiKey) return null;
+        console.log("apikey tomada desde la url: ", apiKey)
         try {
-          const response = await userLogin(apiKey!);
+          const response = await userLogin(apiKey);
 
           if (!response || response.status !== 200) {
             console.error("Credenciales incorrectas: ", response);
@@ -40,12 +35,7 @@ export const authConfig: NextAuthConfig = {
           return {
             id: claims.sub ?? claims.id,
             email: claims.email,
-            role:
-              claims[
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-              ] ??
-              claims.role ??
-              "user",
+            role: claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ?? claims.role ?? "user",
             token: jwt,
           };
         } catch (error) {
@@ -66,19 +56,15 @@ export const authConfig: NextAuthConfig = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const claims = jwtDecode<any>((user as any).token);
         // Type guard to ensure user has the expected properties
-        if ("id" in user) token.id = user.id;
-        if ("email" in user) token.email = user.email;
+        if ('id' in user) token.id = user.id;
+        if ('email' in user) token.email = user.email;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ("role" in user) token.role = (user as any).role;
+        if ('role' in user) token.role = (user as any).role;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ("token" in user) token.accessToken = (user as any).token; // el JWT crudo
-        token.accessTokenExpires =
-          typeof claims.exp === "number" ? claims.exp * 1000 : undefined;
+        if ('token' in user) token.accessToken = (user as any).token; // el JWT crudo
+        token.accessTokenExpires = typeof claims.exp === "number" ? claims.exp * 1000 : undefined;
       }
-      if (
-        typeof token.accessTokenExpires === "number" &&
-        Date.now() > token.accessTokenExpires
-      ) {
+      if (typeof token.accessTokenExpires === "number" && Date.now() > token.accessTokenExpires) {
         return { ...token, error: "AccessTokenExpired" };
       }
       return token;

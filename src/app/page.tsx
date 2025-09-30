@@ -1,17 +1,25 @@
-import { signIn } from "@/auth.config";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { AuthMessage } from "./components/AuthMessage";
 
 export default function AuthPage() {
-  const handleLogin = async () => {
-    // Si tienes la api_key en .env:
-    await signIn("credentials");
+  const searchParams = useSearchParams();
+  const apiKey = searchParams.get("api_key");
+  const [verifying, setVerifying] = useState(false);
 
-    // O si quieres pasarla en query param:
-    // await signIn("credentials", { callbackUrl: "/dashboard", api_key: "SRC_xxx" });
-  };
-  return (
-    <div>
-      <h1>Página de inicio</h1>
-      <button onClick={handleLogin}>Entrar con API Key</button>
-    </div>
-  );
+  useEffect(() => {
+    if (apiKey) {
+      setVerifying(true);
+      signIn("credentials", {
+        api_key: apiKey,
+        redirect: true,
+        callbackUrl: "/dashboard/Comparador",
+      }).finally(() => setVerifying(false));
+    }
+  }, [apiKey]);
+
+  return <AuthMessage isVerifying={verifying || !!apiKey} />;
 }
