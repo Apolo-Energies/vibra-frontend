@@ -41,10 +41,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   // Validar tarifa
   const tarifa = matilData?.tarifa ?? "";
-  const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa);
 
-  const defaultProducto = matilData?.tarifa
-    ? PRODUCTS_BY_TARIFF[matilData?.tarifa][0]
+  const defaultProducto =
+  matilData?.tarifa && PRODUCTS_BY_TARIFF[matilData.tarifa]?.length
+    ? PRODUCTS_BY_TARIFF[matilData.tarifa][0]
     : "Index Base";
 
   const {
@@ -112,6 +112,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     setResultadoFactura(resultadoFactua ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
+
+  const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa); 
 
   if (!esTarifaValida && matilData) {
     return (
