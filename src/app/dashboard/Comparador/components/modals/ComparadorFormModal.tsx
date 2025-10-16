@@ -71,25 +71,6 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const { comision, calcular } = useCommissionStore();
   const calcularStore = useCalculatorStore();
 
-  if (!esTarifaValida && matilData) {
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <div className="p-6 text-center space-y-4">
-          <p className="text-lg font-semibold text-red-400">
-            No es posible procesar este archivo
-          </p>
-          <p className="text-sm text-accent-foreground">
-            Solo se permiten archivos con tarifa <strong>2.0TD</strong>.
-            La tarifa detectada fue: <strong>{tarifa}</strong>
-          </p>
-          <Button variant="outline" onClick={onClose}>
-            Cerrar
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
-
   useEffect(() => {
     calcular({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,6 +113,26 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
 
+
+  if (!esTarifaValida && matilData) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <div className="p-6 text-center space-y-4">
+          <p className="text-lg font-semibold text-red-400">
+            No es posible procesar este archivo
+          </p>
+          <p className="text-sm text-accent-foreground">
+            Solo se permiten archivos con tarifa <strong>2.0TD</strong>.
+            La tarifa detectada fue: <strong>{tarifa}</strong>
+          </p>
+          <Button variant="outline" onClick={onClose}>
+            Cerrar
+          </Button>
+        </div>
+      </Dialog>
+    );
+  }
+  
   const handleDownloadFile = async (type: ExportType) => {
     try {
       const dias = calcularDias(matilData?.fecha_inicio ?? "", matilData?.fecha_fin ?? "")
