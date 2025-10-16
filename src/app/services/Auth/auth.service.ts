@@ -3,7 +3,7 @@ import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
 
 export const userLogin = async (api_key: string): Promise<ApiResponse<unknown>> => {
-    console.log("apikey: ", api_key)
+    // console.log("apikey: ", api_key)
     if (!api_key) {
       return {
         isSuccess: false,

@@ -35,6 +35,33 @@ type FormData = {
 };
 
 export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }: Props) => {
+
+  // Tarifas permitidas
+  const TARIFAS_VALIDAS = ["2.0TD"];
+
+  // Validar tarifa
+  const tarifa = matilData?.tarifa ?? "";
+  const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa);
+
+  if (!esTarifaValida && matilData) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <div className="p-6 text-center space-y-4">
+          <p className="text-lg font-semibold text-red-400">
+            No es posible procesar este archivo
+          </p>
+          <p className="text-sm text-accent-foreground">
+            Solo se permiten archivos con tarifa <strong>2.0TD</strong>.
+            La tarifa detectada fue: <strong>{tarifa}</strong>
+          </p>
+          <Button variant="outline" onClick={onClose}>
+            Cerrar
+          </Button>
+        </div>
+      </Dialog>
+    );
+  }
+
   const defaultProducto = matilData?.tarifa
     ? PRODUCTS_BY_TARIFF[matilData?.tarifa][0]
     : "Index Base";
@@ -50,14 +77,14 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       producto: defaultProducto,
     },
   });
-  
+
   const [feeEnergia, setFeeEnergia] = useState([0]);
   const [feePotencia, setFeePotencia] = useState([0]);
   const [resultadoFactura, setResultadoFactura] = useState<FacturaResult>();
   const { commission } = useCommissionUserStore();
 
   const productoSeleccionado = watch("producto");
-  const comisionEnergia = commission ? commission/100 : 0 ;
+  const comisionEnergia = commission ? commission / 100 : 0;
   const precioMedioOmieInput = Number(watch("precioMedio")) || 20;
 
   const { comision, calcular } = useCommissionStore();
@@ -102,7 +129,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       detalle: matilData?.detalle,
     });
     setResultadoFactura(resultadoFactua ?? undefined);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
 
   const handleDownloadFile = async (type: ExportType) => {
@@ -148,7 +175,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       const exportData: File = {
         lineas,
         archivoId: fileId,
-        proveedorId: 1, 
+        proveedorId: 1,
         // usuario: "usuario_ejemplo",
         cups: matilData?.cups || "-",
         datos: {
@@ -170,12 +197,10 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           nombreCliente: nombreEmpresa,
           razonSocial: razonSocial || "-",
           provincia: matilData?.direccion.provincia || "-",
-          cp: matilData?.direccion.cp  || "-",
+          cp: matilData?.direccion.cp || "-",
           direccion:
-            `${matilData?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${
-              matilData?.direccion?.nombre_via
-            }, ${matilData?.direccion?.numero} ${
-              matilData?.direccion?.detalles
+            `${matilData?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${matilData?.direccion?.nombre_via
+            }, ${matilData?.direccion?.numero} ${matilData?.direccion?.detalles
             }` || "-",
         },
         totales: {
@@ -188,7 +213,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           ivaOferta: resultadoFactura?.iva || 0,
           totalActual: matilData?.detalle?.total || 0,
           totalOferta: resultadoFactura?.total || 0,
-          otrosComunesConIeActual:matilData?.detalle?.bono_social || 0,
+          otrosComunesConIeActual: matilData?.detalle?.bono_social || 0,
           otrosComunesConIeOferta: matilData?.detalle?.bono_social || 0,
           // datos un iniciertos
           otrosComunesSinIeActual: 0,
@@ -199,8 +224,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       };
 
       if (type === "pdf") {
-      await downloadPDF(token, exportData);
-      } 
+        await downloadPDF(token, exportData);
+      }
     } catch (error) {
       console.error("Error al descargar el PDF:", error);
     }
@@ -223,9 +248,9 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             options={
               matilData?.tarifa
                 ? PRODUCTS_BY_TARIFF[matilData?.tarifa].map((p) => ({
-                    label: p,
-                    value: p,
-                  }))
+                  label: p,
+                  value: p,
+                }))
                 : []
             }
             placeholder="Elige una opción"
@@ -257,13 +282,12 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           <div className="relative w-full">
             <div
               className={`absolute -top-4 text-xs font-semibold transition-colors 
-    ${
-      feeEnergia[0] === 0
-        ? "text-red-500"
-        : feeEnergia[0] === 50
-        ? "text-green-600"
-        : "text-foreground"
-    }`}
+    ${feeEnergia[0] === 0
+                  ? "text-red-500"
+                  : feeEnergia[0] === 50
+                    ? "text-green-600"
+                    : "text-foreground"
+                }`}
               style={{
                 left: `${feeEnergia[0]}%`,
                 transform: "translateX(-50%)",
@@ -281,9 +305,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             />
             <div className="flex justify-end">
               <span
-                className={`text-sm font-semibold transition-colors ${
-                  feeEnergia[0] === 50 ? "text-green-600" : "text-foreground"
-                }`}
+                className={`text-sm font-semibold transition-colors ${feeEnergia[0] === 50 ? "text-green-600" : "text-foreground"
+                  }`}
               >
                 50
               </span>
@@ -304,13 +327,12 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           <div className="relative w-full">
             <div
               className={`absolute -top-4 text-xs font-semibold transition-colors 
-    ${
-      feePotencia[0] === 0
-        ? "text-red-500"
-        : feePotencia[0] === 25
-        ? "text-green-600"
-        : "text-foreground"
-    }`}
+    ${feePotencia[0] === 0
+                  ? "text-red-500"
+                  : feePotencia[0] === 25
+                    ? "text-green-600"
+                    : "text-foreground"
+                }`}
               style={{
                 left: `${feePotencia[0]}%`,
                 transform: "translateX(-50%)",
@@ -329,9 +351,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           </div>
           <div className="flex justify-end">
             <span
-              className={`text-sm font-semibold transition-colors ${
-                feePotencia[0] === 25 ? "text-green-600" : "text-foreground"
-              }`}
+              className={`text-sm font-semibold transition-colors ${feePotencia[0] === 25 ? "text-green-600" : "text-foreground"
+                }`}
             >
               25
             </span>
@@ -359,12 +380,11 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               {Math.trunc(Number(resultadoFactura?.ahorroEstudio))}€ al mes
             </p>
             <p
-              className={`text-xl font-bold text-foreground ${
-                resultadoFactura?.ahorroXAnio &&
-                resultadoFactura.ahorroXAnio > 0
+              className={`text-xl font-bold text-foreground ${resultadoFactura?.ahorroXAnio &&
+                  resultadoFactura.ahorroXAnio > 0
                   ? "text-green-500"
                   : "text-red-500"
-              }`}
+                }`}
             >
               {/* {resultadoFactura?.ahorroXAnio}€ al año */}
               {Math.trunc(Number(resultadoFactura?.ahorroXAnio))}€ al año

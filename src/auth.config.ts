@@ -18,7 +18,7 @@ export const authConfig: NextAuthConfig = {
       async authorize(credentials): Promise<any | null> {
         const apiKey = credentials?.api_key as string;
         if (!apiKey) return null;
-        console.log("apikey tomada desde la url: ", apiKey)
+        // console.log("apikey tomada desde la url: ", apiKey)
         try {
           const response = await userLogin(apiKey);
 

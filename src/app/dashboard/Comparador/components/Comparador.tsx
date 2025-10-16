@@ -46,7 +46,7 @@ export const Comparador = () => {
   
       const resultado = await subirYProcesarDocumento(token, file, nombre, tipo);
 
-      console.log("resultado matildata: ", resultado)
+      // console.log("resultado matildata: ", resultado)
   
       setMatilData(resultado?.result?.ocrData);
       setFileId(resultado?.result?.id);
