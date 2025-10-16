@@ -43,25 +43,6 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const tarifa = matilData?.tarifa ?? "";
   const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa);
 
-  if (!esTarifaValida && matilData) {
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <div className="p-6 text-center space-y-4">
-          <p className="text-lg font-semibold text-red-400">
-            No es posible procesar este archivo
-          </p>
-          <p className="text-sm text-accent-foreground">
-            Solo se permiten archivos con tarifa <strong>2.0TD</strong>.
-            La tarifa detectada fue: <strong>{tarifa}</strong>
-          </p>
-          <Button variant="outline" onClick={onClose}>
-            Cerrar
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
-
   const defaultProducto = matilData?.tarifa
     ? PRODUCTS_BY_TARIFF[matilData?.tarifa][0]
     : "Index Base";
@@ -89,6 +70,25 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   const { comision, calcular } = useCommissionStore();
   const calcularStore = useCalculatorStore();
+
+  if (!esTarifaValida && matilData) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <div className="p-6 text-center space-y-4">
+          <p className="text-lg font-semibold text-red-400">
+            No es posible procesar este archivo
+          </p>
+          <p className="text-sm text-accent-foreground">
+            Solo se permiten archivos con tarifa <strong>2.0TD</strong>.
+            La tarifa detectada fue: <strong>{tarifa}</strong>
+          </p>
+          <Button variant="outline" onClick={onClose}>
+            Cerrar
+          </Button>
+        </div>
+      </Dialog>
+    );
+  }
 
   useEffect(() => {
     calcular({
@@ -381,9 +381,9 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             </p>
             <p
               className={`text-xl font-bold text-foreground ${resultadoFactura?.ahorroXAnio &&
-                  resultadoFactura.ahorroXAnio > 0
-                  ? "text-green-500"
-                  : "text-red-500"
+                resultadoFactura.ahorroXAnio > 0
+                ? "text-green-500"
+                : "text-red-500"
                 }`}
             >
               {/* {resultadoFactura?.ahorroXAnio}€ al año */}
