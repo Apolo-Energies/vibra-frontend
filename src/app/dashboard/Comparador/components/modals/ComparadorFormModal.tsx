@@ -113,7 +113,6 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
 
-
   if (!esTarifaValida && matilData) {
     return (
       <Dialog open={open} onClose={onClose}>
@@ -132,7 +131,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       </Dialog>
     );
   }
-  
+
   const handleDownloadFile = async (type: ExportType) => {
     try {
       const dias = calcularDias(matilData?.fecha_inicio ?? "", matilData?.fecha_fin ?? "")
