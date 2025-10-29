@@ -32,11 +32,16 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   }
 
   if (userRole === "colaborador") {
-    if (!url.pathname.startsWith("/dashboard/Comparador")) {
+    const allowedPaths = ["/dashboard/Comparador", "/dashboard/Contrato"];
+
+    const isAllowed = allowedPaths.some((path) => url.pathname.startsWith(path));
+
+    if (!isAllowed) {
       url.pathname = "/dashboard/Comparador";
       return NextResponse.redirect(url);
     }
   }
+
   // const userRole = session.user?.role;
 
   // Verifica si el rol es válido

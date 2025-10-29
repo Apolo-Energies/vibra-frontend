@@ -12,15 +12,17 @@ export const authConfig: NextAuthConfig = {
     Credentials({
       name: "API Key",
       credentials: {
-        api_key: { label: "API Key", type: "text" },
+        accessCode: { label: "Código de acceso", type: "text" },
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(credentials): Promise<any | null> {
-        const apiKey = credentials?.api_key as string;
-        if (!apiKey) return null;
+        const accessCode = credentials?.accessCode as string;
+        if (!accessCode) return null;
         // console.log("apikey tomada desde la url: ", apiKey)
         try {
-          const response = await userLogin(apiKey);
+          const response = await userLogin(accessCode);
+
+          console.log("response: ", response)
 
           if (!response || response.status !== 200) {
             console.error("Credenciales incorrectas: ", response);
