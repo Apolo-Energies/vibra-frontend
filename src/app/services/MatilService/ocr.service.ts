@@ -7,7 +7,7 @@ export const subirYProcesarDocumento = async (token :string, file: File, nombre:
     formData.append("Nombre", nombre);
     formData.append("Tipo", tipo.toString());
 
-    const response = await ApiManager.post("/archivos/upload-and-process-renovae", formData, {
+    const response = await ApiManager.post("/archivos/upload-and-process-file", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`
