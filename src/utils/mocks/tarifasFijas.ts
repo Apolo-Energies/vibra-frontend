@@ -35,9 +35,9 @@ export const REPARTO_2_0: RepartoOmieMock = {
     {
       periodo: "JULIO 24-JUNIO 25",
       periodos: {
-        P1: 1.11272531611515,
-        P2: 1.04654291094969,
-        P3: 0.930992736077482,
+        P1: 0.119900,
+        P2: 0.119900,
+        P3: 0.119900,
       },
     },
   ],
@@ -53,8 +53,8 @@ export const POTENCIA_BOE_MOCKS: PotenciaBoe[] = [
   {
     tarifa: "2.0TD",
     periodos: {
-      P1: 0.117808,
-      P2: 0.046575,
+      P1: 0.09041,
+      P2: 0.09041,
       P3: undefined,
       P4: undefined,
       P5: undefined,
