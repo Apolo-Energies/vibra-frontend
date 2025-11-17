@@ -1,8 +1,5 @@
+import { Contracts } from "./components/Contracts";
 
 export default function ContratoPage() {
-  return (
-    <div>
-        <p>Pagina de contratos.</p>
-    </div>
-  );
+  return <Contracts />;
 }

@@ -13,7 +13,6 @@ export const SidebarContent = () => {
   // const { theme } = useTheme();
   const { data: session, update } = useSession();
   const [sessionUpdated, setSessionUpdated] = useState(false);
-
   
   useEffect(() => {
     // Si hay sesión y aún no hemos hecho update
@@ -22,7 +21,7 @@ export const SidebarContent = () => {
       setSessionUpdated(true); // marca que ya se ejecutó
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sessionUpdated]);
   
   // const logoSrc =
   //   theme === "dark" ? "/logos/vibralogo.webp" : "/logos/vibralogo.webp";

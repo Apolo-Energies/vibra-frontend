@@ -1,26 +1,27 @@
 import axios from "axios";
 import { ApiManager } from "../ApiManager/ApiManager";
 import { ApiResponse } from "../interfaces/ApiResponse";
-const VALID_CODE = process.env.NEXT_PUBLIC_ACCESS_CODE; 
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+const ACCESS_CODES: Record<string, string> = {
+  [process.env.NEXT_PUBLIC_ACCESS_CODE!]: process.env.NEXT_PUBLIC_API_KEY!,
+  [process.env.NEXT_PUBLIC_ACCESS_CODE_2!]: process.env.NEXT_PUBLIC_API_KEY_2!,
+};
 
 export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown>> => {
-
-  console.log("caodigo valido: ", VALID_CODE, "codigo ingresado: ", accessCode)
-
-  console.log("APIKEY: ", API_KEY)
-
   if (!accessCode) {
     return {
       isSuccess: false,
       displayMessage: "Debes ingresar un código de acceso",
       errorMessages: ["Código vacío"],
       result: null,
-      status: 400
+      status: 400,
     };
   }
 
-  if (accessCode !== VALID_CODE) {
+  // Buscar la API Key correspondiente al código ingresado
+  const apiKey = ACCESS_CODES[accessCode];
+
+  if (!apiKey) {
     return {
       isSuccess: false,
       displayMessage: "Código de acceso inválido",
@@ -30,20 +31,10 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
     };
   }
 
-  if (!API_KEY) {
-    return {
-      isSuccess: false,
-      displayMessage: "API Key no configurada en el servidor",
-      errorMessages: ["API Key faltante"],
-      result: null,
-      status: 500
-    };
-  }
-
   try {
     const response = await ApiManager.post(
       "/apikey/login",
-      { api_key: API_KEY },
+      { api_key: apiKey },
       { withCredentials: false }
     );
 
@@ -52,7 +43,7 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
       displayMessage: "Login exitoso",
       errorMessages: [],
       result: response?.data?.result?.token,
-      status: response.status
+      status: response.status,
     };
   } catch (error) {
     console.error("Login error:", error);

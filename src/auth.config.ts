@@ -22,7 +22,7 @@ export const authConfig: NextAuthConfig = {
         try {
           const response = await userLogin(accessCode);
 
-          console.log("response: ", response)
+          // console.log("response: ", response)
 
           if (!response || response.status !== 200) {
             console.error("Credenciales incorrectas: ", response);

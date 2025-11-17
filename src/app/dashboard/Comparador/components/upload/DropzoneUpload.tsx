@@ -67,7 +67,7 @@ export const DropzoneUpload = ({ onFileSelect }: Props) => {
         onDragLeave={() => setHovering(false)}
         onDrop={handleDrop}
         className={cn(
-          "w-full min-h-[200px] bg-info-bg rounded-xl border border-dashed border-blue-300 px-6 py-4 flex flex-col items-center justify-center text-center transition relative cursor-pointer",
+          "w-full min-h-[200px] bg-info-bg rounded-xl border border-dashed border-blue-300 px-6 py-4 flex flex-col items-center justify-center text-center transition relative cursor-pointer hover:bg-blue-200/30",
           hovering && "ring-2 ring-blue-400"
         )}
       >
@@ -89,6 +89,8 @@ export const DropzoneUpload = ({ onFileSelect }: Props) => {
             ) : (
               <Image
                 src={preview}
+                width={300}
+                height={200}
                 alt="preview"
                 className="max-h-40 rounded-md object-contain"
               />
