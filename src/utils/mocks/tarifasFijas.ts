@@ -14,7 +14,7 @@ export const TARIFF_MOCKS: TarifaProducto[] = [
   {
     modalidad: "Fijo Vibra",
     tarifa: "2.0TD",
-    periodos: { P1: 0.135000, P2: 0.135000, P3: 0.135000 },
+    periodos: { P1: 0.119000, P2: 0.119000, P3: 0.119000 },
   }
 ];
 
