@@ -40,12 +40,12 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const TARIFAS_VALIDAS = ["2.0TD"];
 
   // Validar tarifa
-  const tarifa = matilData?.tarifa ?? "";
+  const tarifa = matilData?.contrato?.tarifa ?? "";
 
   const defaultProducto =
-  matilData?.tarifa && PRODUCTS_BY_TARIFF[matilData.tarifa]?.length
-    ? PRODUCTS_BY_TARIFF[matilData.tarifa][0]
-    : "Index Base";
+    matilData?.contrato?.tarifa && PRODUCTS_BY_TARIFF[matilData.contrato.tarifa]?.length
+      ? PRODUCTS_BY_TARIFF[matilData.contrato.tarifa][0]
+      : "Index Base";
 
   const {
     register,
@@ -91,7 +91,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   useEffect(() => {
     if (!matilData) return;
-    const tarifa = matilData?.tarifa;
+    const tarifa = matilData?.contrato?.tarifa;
     calcularStore.setTarifa(tarifa);
 
     calcularStore.setProducto(
@@ -102,18 +102,12 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     );
     calcularStore.setPotencia(tarifa, feePotencia[0], productoSeleccionado);
 
-    const resultadoFactua = calcularStore.calcularFactura({
-      fecha_inicio: matilData.fecha_inicio,
-      fecha_fin: matilData?.fecha_fin,
-      energia: matilData?.energia,
-      potencia: matilData?.potencia,
-      detalle: matilData?.detalle,
-    });
+    const resultadoFactua = calcularStore.calcularFactura(matilData);
     setResultadoFactura(resultadoFactua ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matilData, productoSeleccionado, precioMedioOmieInput, feeEnergia, feePotencia]);
 
-  const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa); 
+  const esTarifaValida = TARIFAS_VALIDAS.includes(tarifa);
 
   if (!esTarifaValida && matilData) {
     return (
@@ -136,23 +130,25 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   const handleDownloadFile = async (type: ExportType) => {
     try {
-      const dias = calcularDias(matilData?.fecha_inicio ?? "", matilData?.fecha_fin ?? "")
+      const dias = matilData?.periodo_facturacion?.numero_dias
       const periodos = resultadoFactura?.periodos || [];
-      const { nombreEmpresa, razonSocial } = parseTitular(matilData?.titular);
+      const { nombreEmpresa, razonSocial } = parseTitular(matilData?.cliente?.titular);
       const lineas = [
         // Energía
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ...(matilData?.energia || []).map((e: any) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const periodo = periodos.find((p: any) => p.periodo === `P${e.p}`);
+          const periodo = periodos.find((p: any) => p.periodo === e.p);
           return {
             termino: `ENERGÍA P${e.p}`,
             unidad: Unidad.KWh,
-            valor: e.kwh,
-            precioActual: e.kwh ? e.activa_eur / e.kwh : 0,
-            costeActual: e.activa_eur,
-            precioOferta: periodo ? periodo.precioEnergiaOferta : 0,
-            costeOferta: periodo ? periodo.costeEnergia : 0,
+
+            valor: e.activa?.kwh ?? 0,
+            precioActual: e.activa?.tarifa ?? 0,
+            costeActual: e.activa?.importe ?? 0,
+
+            precioOferta: periodo?.precioEnergiaOferta ?? 0,
+            costeOferta: periodo?.costeEnergia ?? 0,
           };
         }),
 
@@ -161,16 +157,18 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
         ...(matilData?.potencia || []).map((p: any) => {
           const periodo = periodos.find(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (per: any) => per.periodo === `P${p.p}`
+            (per: any) => per.periodo === p.p
           );
           return {
             termino: `POTENCIA P${p.p}`,
             unidad: Unidad.KW,
-            valor: p.kw,
-            precioActual: p.kw ? p.potencia_eur / p.kw / dias : 0,
-            costeActual: p.potencia_eur,
-            precioOferta: periodo ? periodo.precioPotenciaOferta : 0,
-            costeOferta: periodo ? periodo.costePotencia : 0,
+
+            valor: p.contratada?.kw ?? 0,
+            precioActual: p.contratada?.tarifa ?? 0,
+            costeActual: p.contratada?.importe ?? 0,
+
+            precioOferta: periodo?.precioPotenciaOferta ?? 0,
+            costeOferta: periodo?.costePotencia ?? 0,
           };
         }),
       ];
@@ -179,13 +177,13 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
         archivoId: fileId,
         proveedorId: 1,
         // usuario: "usuario_ejemplo",
-        cups: matilData?.cups || "-",
+        cups: matilData?.cliente?.cups || "-",
         datos: {
           titulo: "Comparativa de oferta",
-          tarifa: matilData?.tarifa || "-",
+          tarifa: matilData?.contrato?.tarifa || "-",
           modalidad: productoSeleccionado,
-          periodo: matilData?.fecha_fin || "-",
-          diasFactura: dias,
+          periodo: matilData?.periodo_facturacion?.fecha_fin || "-",
+          diasFactura: dias ?? 0,
           ahorro: resultadoFactura?.ahorroEstudio || 0,
           ahorroPorcentaje: resultadoFactura?.ahorro_porcent || 0,
           ahorroAnual: resultadoFactura?.ahorroXAnio || 0,
@@ -195,32 +193,37 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           feePotencia: feePotencia[0],
         },
         cliente: {
-          cif: matilData?.nif || "-",
+          cif: matilData?.cliente?.nif || "-",
           nombreCliente: nombreEmpresa,
           razonSocial: razonSocial || "-",
-          provincia: matilData?.direccion.provincia || "-",
-          cp: matilData?.direccion.cp || "-",
+          provincia: matilData?.cliente?.direccion.provincia || "-",
+          cp: matilData?.cliente?.direccion.cp || "-",
           direccion:
-            `${matilData?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${matilData?.direccion?.nombre_via
-            }, ${matilData?.direccion?.numero} ${matilData?.direccion?.detalles
+            `${matilData?.cliente?.direccion?.tipo_via?.slice(0, 2).toUpperCase()} ${matilData?.cliente?.direccion?.nombre_via
+            }, ${matilData?.cliente?.direccion?.numero} ${matilData?.cliente?.direccion?.detalles
             }` || "-",
         },
         totales: {
-          baseActual: matilData?.detalle?.subtotal || 0,
+          baseActual: matilData?.iva.base || 0,
           baseOferta: resultadoFactura?.subTotal || 0,
-          impuestoElectricoActual: matilData?.detalle?.ie || 0,
+          impuestoElectricoActual: matilData?.ie?.importe || 0,
           impuestoElectricoOferta: resultadoFactura?.impuestoElectrico || 0,
-          alquilerEquipo: matilData?.detalle?.equipos || 0,
-          ivaActual: matilData?.detalle?.iva_igic?.valor || 0,
+          alquilerEquipo: matilData?.equipos?.importe || 0,
+          ivaActual: matilData?.iva?.importe || 0,
           ivaOferta: resultadoFactura?.iva || 0,
-          totalActual: matilData?.detalle?.total || 0,
+          totalActual: matilData?.total || 0,
           totalOferta: resultadoFactura?.total || 0,
-          otrosComunesConIeActual: matilData?.detalle?.bono_social || 0,
-          otrosComunesConIeOferta: matilData?.detalle?.bono_social || 0,
+
+
+          // otrosComunesConIeActual: resultadoFactura?.costesComunesConIE || 0,
+          // otrosComunesConIeOferta: resultadoFactura?.costesComunesConIE || 0,
+          otrosComunesConIeActual: matilData?.bono_social?.importe || 0,
+          otrosComunesConIeOferta: matilData?.bono_social?.importe || 0,
           // datos un iniciertos
           otrosComunesSinIeActual: 0,
           otrosComunesSinIeOferta: 0,
-          otrosNoComunesActual: matilData?.detalle?.otros || 0,
+          otrosNoComunesActual: (matilData?.otros_servicios ?? [])
+            .reduce((total, s) => total + (s.importe ?? 0), 0),
           otrosNoComunesOferta: 0,
         },
       };
@@ -248,8 +251,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
             label="Producto a ofertar"
             name="producto"
             options={
-              matilData?.tarifa
-                ? PRODUCTS_BY_TARIFF[matilData?.tarifa].map((p) => ({
+              matilData?.contrato?.tarifa
+                ? PRODUCTS_BY_TARIFF[matilData?.contrato?.tarifa].map((p) => ({
                   label: p,
                   value: p,
                 }))

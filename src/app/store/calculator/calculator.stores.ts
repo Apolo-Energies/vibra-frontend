@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { FacturaResult, Periodo, PotenciaResult, ProductoResult } from "./calculator.types";
 import { calcularFacturaHelper, calcularPotencia, calcularPrecios } from "./calculator.helpers";
-import { Detalle } from "@/app/dashboard/Comparador/interfaces/matilData";
+import { OcrData } from "@/app/dashboard/Comparador/interfaces/matilData";
 
 interface CalculatorState {
   tarifa: string | null;
@@ -22,12 +22,7 @@ interface CalculatorState {
     | { tarifa: string; periodos: PotenciaResult[] }
     | null;
   
-  calcularFactura: (matilData: {
-    fecha_inicio: string, fecha_fin: string,
-    energia: Array<{ p: number; kwh: number }>;
-    potencia: Array<{ p: number; kw: number }>;
-    detalle: Detalle
-  }) => FacturaResult | null;
+  calcularFactura: (matilData: OcrData) => FacturaResult | null;
 }
 
 export const useCalculatorStore = create<CalculatorState>((set, get) => ({

@@ -4,8 +4,7 @@ import {
   TARIFF_MOCKS,
 } from "@/utils/mocks/tarifasFijas";
 import { FacturaResult, Periodo, PotenciaResult, ProductoResult } from "./calculator.types";
-import { Detalle } from "@/app/dashboard/Comparador/interfaces/matilData";
-import { calcularDias } from "@/utils/dates";
+import { OcrData } from "@/app/dashboard/Comparador/interfaces/matilData";
 
 const round6 = (n: number) => Math.round(n * 1e6) / 1e6;
 const round3 = (num: number) => Math.round(num * 1000) / 1000;
@@ -71,20 +70,14 @@ export const calcularPotencia = (
 export const calcularFacturaHelper = (
   resultados: ProductoResult,
   resultadosPotencia: { tarifa: string; periodos: PotenciaResult[] },
-  matilData: {
-    fecha_inicio: string,
-    fecha_fin: string,
-    energia: { p: number; kwh: number }[],
-    potencia: { p: number; kw: number }[],
-    detalle: Detalle
-  }
+  matilData: OcrData
 ): FacturaResult => {
   const PS: Periodo[] = ["P1","P2","P3","P4","P5","P6"];
-  const dias = calcularDias(matilData.fecha_inicio, matilData.fecha_fin);
+  const dias = matilData.periodo_facturacion.numero_dias;
 
   const periodos = PS.map((periodo, idx) => {
-    const kwh = matilData.energia[idx]?.kwh ?? 0;
-    const kw  = matilData.potencia[idx]?.kw ?? 0;
+    const kwh = matilData.energia[idx]?.activa?.kwh ?? 0;
+    const kw  = matilData.potencia[idx]?.contratada?.kw ?? 0;
 
     if (kwh === 0 && kw === 0) return null;
 
@@ -114,21 +107,23 @@ export const calcularFacturaHelper = (
 
   const totalEnergia = round6(periodos.reduce((acc, p) => acc + p.costeEnergia, 0));
   const totalPotencia = round6(periodos.reduce((acc, p) => acc + p.costePotencia, 0));
+  const otros_servicios = matilData.otros_servicios
+  .reduce((total, s) => total + (s.importe ?? 0), 0);
   const impuestoElectrico = round6((totalEnergia + totalPotencia + 0.2) * 0.0511269632);
-  const subTotal = totalEnergia + totalPotencia + 0.2 + impuestoElectrico + matilData.detalle.equipos;
+  const subTotal = totalEnergia + totalPotencia + 0.2 + impuestoElectrico + matilData.equipos.importe;
   const iva = subTotal * 0.21;
   const total = round6(subTotal + iva);
-  const ahorroEstudio = round3(matilData.detalle.total - total);
-  const ahorro_porcent = parseFloat(((ahorroEstudio / matilData.detalle.total) * 100).toFixed(2));
+  const ahorroEstudio = round3(matilData.total - total);
+  const ahorro_porcent = parseFloat(((ahorroEstudio / matilData.total) * 100).toFixed(2));
 
   const kwhEnergia = round6(periodos.reduce((acc, p) => acc + p.kwh, 0));
   const diasFacturados = dias;
   const totalAnio = 10 * kwhEnergia;
   const ahorroAnio = (
     (
-      ((matilData.detalle.totales_energia.activa_eur - totalEnergia) / kwhEnergia * totalAnio) +
-      ((matilData.detalle.totales_potencia.potencia_eur - totalPotencia) / diasFacturados * 365) +
-      (matilData.detalle.otros / diasFacturados) * 365
+      ((matilData.totales_electricidad.energia.activa - totalEnergia) / kwhEnergia * totalAnio) +
+      ((matilData.totales_electricidad.potencia.contratada - totalPotencia) / diasFacturados * 365) +
+      (otros_servicios / diasFacturados) * 365
     ) * (1 + 0.0511269632 + 0.21)
   );
   const ahorroXAnio = Number(ahorroAnio.toFixed(2));
