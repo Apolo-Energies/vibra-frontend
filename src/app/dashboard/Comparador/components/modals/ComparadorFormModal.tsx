@@ -16,7 +16,6 @@ import { FacturaResult } from "@/app/store/calculator/calculator.types";
 import { downloadPDF } from "@/app/services/FileService/pdf.service";
 import { File, Unidad } from "@/app/services/interfaces/pdf";
 import { useCommissionUserStore } from "@/app/store/commission-user/commission-user.store";
-import { calcularDias } from "@/utils/dates";
 import { parseTitular } from "@/utils/paserNameRs";
 
 interface Props {
@@ -132,13 +131,21 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     try {
       const dias = matilData?.periodo_facturacion?.numero_dias
       const periodos = resultadoFactura?.periodos || [];
+
+      console.log("resultado periodos: ", periodos);
+
       const { nombreEmpresa, razonSocial } = parseTitular(matilData?.cliente?.titular);
       const lineas = [
-        // Energía
+        // ENERGIA
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ...(matilData?.energia || []).map((e: any) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const periodo = periodos.find((p: any) => p.periodo === e.p);
+          const periodo = periodos.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (per: any) => per.periodo === `P${e.p}`
+          );
+
+          console.log("periodo encontrado energia:", periodo);
+
           return {
             termino: `ENERGÍA P${e.p}`,
             unidad: Unidad.KWh,
@@ -152,26 +159,33 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           };
         }),
 
-        // Potencia
+        // POTENCIA
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ...(matilData?.potencia || []).map((p: any) => {
+        ...(matilData?.potencia || []).map((pot: any) => {
           const periodo = periodos.find(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (per: any) => per.periodo === p.p
+            (per: any) => per.periodo === `P${pot.p}`
           );
+
+          console.log("periodo encontrado potencia:", periodo);
+
           return {
-            termino: `POTENCIA P${p.p}`,
+            termino: `POTENCIA P${pot.p}`,
             unidad: Unidad.KW,
 
-            valor: p.contratada?.kw ?? 0,
-            precioActual: p.contratada?.tarifa ?? 0,
-            costeActual: p.contratada?.importe ?? 0,
+            valor: pot.contratada?.kw ?? 0,
+            precioActual: pot.contratada?.tarifa ?? 0,
+            costeActual: pot.contratada?.importe ?? 0,
 
             precioOferta: periodo?.precioPotenciaOferta ?? 0,
             costeOferta: periodo?.costePotencia ?? 0,
           };
         }),
       ];
+
+
+      console.log("lineas para el pdf: ", lineas);
+
       const exportData: File = {
         lineas,
         archivoId: fileId,

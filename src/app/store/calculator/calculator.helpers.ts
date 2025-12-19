@@ -128,5 +128,7 @@ export const calcularFacturaHelper = (
   );
   const ahorroXAnio = Number(ahorroAnio.toFixed(2));
 
+  console.log("periodos: ", periodos)
+
   return { periodos, totalEnergia, totalPotencia, total, ahorroEstudio, ahorro_porcent, ahorroXAnio, subTotal, impuestoElectrico, iva, totalAnio };
 };
