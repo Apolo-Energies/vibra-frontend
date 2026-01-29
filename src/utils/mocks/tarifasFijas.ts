@@ -53,8 +53,8 @@ export const POTENCIA_BOE_MOCKS: PotenciaBoe[] = [
   {
     tarifa: "2.0TD",
     periodos: {
-      P1: 0.08767,
-      P2: 0.08767,
+      P1: 0.09589,
+      P2: 0.09589,
       P3: undefined,
       P4: undefined,
       P5: undefined,

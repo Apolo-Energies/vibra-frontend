@@ -5,7 +5,7 @@ import { File } from "../interfaces/pdf";
 export const downloadPDF = async (token: string, data: File) => {
     try {
       // Enviamos los datos al endpoint que genera el PDF
-      const response = await ApiManager.post("/historialComparador/pdf", data, {
+      const response = await ApiManager.post("/comparisonhistory/pdf", data, {
         responseType: "blob", // importante: recibir archivo
         headers: {
           Authorization: `Bearer ${token}`,

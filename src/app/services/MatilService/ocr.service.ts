@@ -3,11 +3,11 @@ import { ApiManager } from "../ApiManager/ApiManager";
 export const subirYProcesarDocumento = async (token :string, file: File, nombre: string, tipo: number) => {
   try {
     const formData = new FormData();
-    formData.append("Archivo", file);
-    formData.append("Nombre", nombre);
-    formData.append("Tipo", tipo.toString());
+    formData.append("File", file);
+    formData.append("Name", nombre);
+    formData.append("Type", tipo.toString());
 
-    const response = await ApiManager.post("/archivos/upload-and-process-file", formData, {
+    const response = await ApiManager.post("/files/upload-and-process-file", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`
