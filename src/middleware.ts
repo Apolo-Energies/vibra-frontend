@@ -32,7 +32,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   }
 
   if (userRole === "colaborador") {
-    const allowedPaths = ["/dashboard/Comparador", "/dashboard/Contrato"];
+    const allowedPaths = ["/dashboard/Comparador", "/dashboard/Contrato", "/dashboard/Tarifas"];
 
     const isAllowed = allowedPaths.some((path) => url.pathname.startsWith(path));
 
