@@ -12,12 +12,6 @@ export interface ProductoResult {
 }
 
 
-export interface PotenciaPeriodoResult {
-  periodo: Periodo;
-  base: number;
-  oferta: number;
-}
-
 export interface PotenciaResult {
   periodo: Periodo;
   basePotencia: number;
@@ -26,13 +20,12 @@ export interface PotenciaResult {
 
 export interface FacturaPeriodo {
   periodo: Periodo;
-  kwh: number;                 // de matil
-  kw: number;                  // de matil
-  precioEnergiaOferta: number; // €/kWh
-  precioPotenciaOferta: number;// €/kW·día
-  costeEnergia: number;        // kWh * precioEnergiaOferta
-  costePotencia: number;       // kW  * precioPotenciaOferta
-  totalPeriodo: number;        // suma
+  kwh: number;
+  kw: number;
+  precioEnergiaOferta: number;
+  precioPotenciaOferta: number;
+  costeEnergia: number;
+  costePotencia: number;
 }
 
 export interface FacturaResult {
@@ -41,8 +34,8 @@ export interface FacturaResult {
   totalPotencia: number;
   total: number;
   ahorroEstudio: number;
-  ahorro_porcent: number
-  ahorroXAnio: number
+  ahorro_porcent: number;
+  ahorroXAnio: number;
   subTotal: number;
   impuestoElectrico: number;
   iva: number;

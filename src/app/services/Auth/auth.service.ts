@@ -18,7 +18,6 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
     };
   }
 
-  // Buscar la API Key correspondiente al código ingresado
   const apiKey = ACCESS_CODES[accessCode];
 
   if (!apiKey) {
@@ -33,25 +32,29 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
 
   try {
     const response = await ApiManager.post(
-      "/apikey/login",
-      { api_key: apiKey },
+      "/api-key/login",
+      { apiKey },
       { withCredentials: false }
     );
+
+    console.log("Login response:", response);
 
     return {
       isSuccess: true,
       displayMessage: "Login exitoso",
       errorMessages: [],
-      result: response?.data?.result?.token,
+      result: response?.data?.token,
       status: response.status,
     };
   } catch (error) {
     console.error("Login error:", error);
     if (axios.isAxiosError(error)) {
+      console.error("Login error response body:", JSON.stringify(error.response?.data));
+      const errorMsg = error.response?.data?.error ?? error.response?.data?.message ?? "Unknown error";
       return {
         isSuccess: false,
-        displayMessage: error.response?.data?.message ?? "Unknown error",
-        errorMessages: [error.response?.data?.message ?? "Unknown error"],
+        displayMessage: errorMsg,
+        errorMessages: [errorMsg],
         result: null,
         status: error.response?.status ?? 500,
       };

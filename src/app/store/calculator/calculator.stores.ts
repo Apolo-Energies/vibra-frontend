@@ -2,6 +2,9 @@ import { create } from "zustand";
 import { FacturaResult, Periodo, PotenciaResult, ProductoResult } from "./calculator.types";
 import { calcularFacturaHelper, calcularPotencia, calcularPrecios } from "./calculator.helpers";
 import { OcrData } from "@/app/dashboard/Comparador/interfaces/matilData";
+import { Tariff, Product } from "@/app/dashboard/Tarifas/interfaces/tarifa.interface";
+
+const PERIODS: Periodo[] = ["P1", "P2", "P3", "P4", "P5", "P6"];
 
 interface CalculatorState {
   tarifa: string | null;
@@ -11,17 +14,8 @@ interface CalculatorState {
   factura: FacturaResult | null;
 
   setTarifa: (tarifa: string) => void;
-  setProducto: (
-    tarifa: string,
-    producto: string,
-    precioMedioOmie: number,
-    feeEnergia: number
-  ) => void;
-
-  setPotencia: (tarifa: string, feePotencia: number, modalidad: string) =>
-    | { tarifa: string; periodos: PotenciaResult[] }
-    | null;
-  
+  setProducto: (tariff: Tariff, product: Product, precioMedioOmie: number, feeEnergia: number) => ProductoResult;
+  setPotencia: (tariff: Tariff, product: Product, feePotencia: number) => { tarifa: string; periodos: PotenciaResult[] };
   calcularFactura: (matilData: OcrData) => FacturaResult | null;
 }
 
@@ -32,51 +26,24 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
   resultadosPotencia: null,
   factura: null,
 
-  setTarifa: (tarifa: string) => {
-    set({ tarifa });
-  },
+  setTarifa: (tarifa) => set({ tarifa }),
 
-  setProducto: (
-    tarifa: string,
-    producto: string,
-    precioMedioOmie: number,
-    feeEnergia: number
-  ) => {
-    if (!tarifa) return null;
-
-    const periodos: { periodo: Periodo; base: number; oferta: number }[] = (
-      ["P1", "P2", "P3", "P4", "P5", "P6"] as Periodo[]
-    ).map((periodo) => {
-      const { base, oferta } = calcularPrecios(
-        tarifa,
-        periodo,
-        precioMedioOmie,
-        feeEnergia
-      );
+  setProducto: (tariff, product, precioMedioOmie, feeEnergia) => {
+    const periodos = PERIODS.map((periodo) => {
+      const { base, oferta } = calcularPrecios(tariff, product, periodo, precioMedioOmie, feeEnergia);
       return { periodo, base, oferta };
     });
-
-    const resultados = { producto, periodos };
-
-    set({ producto, resultados }); 
+    const resultados: ProductoResult = { producto: product.name, periodos };
+    set({ producto: product.name, resultados });
     return resultados;
   },
 
-  setPotencia: (tarifa: string, feePotencia: number) => {
-    if (!tarifa) return null;
-
-    const periodos = (["P1","P2","P3","P4","P5","P6"] as Periodo[]).map(
-      (periodo) => {
-        const { base, oferta } = calcularPotencia(tarifa, periodo, feePotencia);
-        return {
-          periodo,
-          basePotencia: base,
-          ofertaPotencia: oferta,
-        };
-      }
-    );
-
-    const resultadosPotencia = { tarifa, periodos };
+  setPotencia: (tariff, product, feePotencia) => {
+    const periodos = PERIODS.map((periodo) => {
+      const { base, oferta } = calcularPotencia(tariff, product, periodo, feePotencia);
+      return { periodo, basePotencia: base, ofertaPotencia: oferta };
+    });
+    const resultadosPotencia = { tarifa: tariff.code, periodos };
     set({ resultadosPotencia });
     return resultadosPotencia;
   },
@@ -88,5 +55,4 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
     set({ factura });
     return factura;
   },
-  
 }));

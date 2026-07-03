@@ -14,10 +14,10 @@ export const ThemeProviderClient = ({
   }, []);
 
   if (!isMounted) {
-    return <div className="h-screen bg-white dark:bg-gray-900" />;
+    return <div className="h-screen bg-[#25272A]" />;
   }
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem={false} themes={["light", "dark", "neutral"]}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["dark"]}>
       {children}
     </ThemeProvider>
   );
