@@ -67,8 +67,8 @@ export const DropzoneUpload = ({ onFileSelect }: Props) => {
         onDragLeave={() => setHovering(false)}
         onDrop={handleDrop}
         className={cn(
-          "w-full min-h-[200px] bg-info-bg rounded-xl border border-dashed border-blue-300 px-6 py-4 flex flex-col items-center justify-center text-center transition relative cursor-pointer hover:bg-blue-200/30",
-          hovering && "ring-2 ring-blue-400"
+          "w-full min-h-[220px] bg-body rounded-lg border border-border px-6 py-8 flex flex-col items-center justify-center text-center transition relative cursor-pointer hover:border-primary/40",
+          hovering && "border-primary/60"
         )}
       >
         <input
@@ -104,8 +104,8 @@ export const DropzoneUpload = ({ onFileSelect }: Props) => {
           </div>
         ) : (
           <>
-            <Upload className="w-8 h-8 text-info-subtext" strokeWidth={1.5} />
-            <p className="text-sm font-semibold text-muted-foreground mt-2">
+            <Upload className="w-8 h-8 text-white" strokeWidth={1.5} />
+            <p className="text-sm font-semibold text-white mt-2">
               Haz clic o arrastra un archivo (PDF o imagen)
             </p>
             <p className="text-xs text-muted-foreground">

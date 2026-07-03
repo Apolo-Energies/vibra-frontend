@@ -46,7 +46,7 @@ export const Select = <T extends FieldValues>({
         }`}
       >
         {placeholder && (
-          <option value="" disabled selected hidden>
+          <option value="" disabled hidden>
             {placeholder}
           </option>
         )}

@@ -17,7 +17,7 @@ export const Dialog = ({ open, onClose, children, className }: DialogProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
       <div
-        className={`relative w-full max-w-lg rounded-xl p-6 shadow-xl bg-card text-card-foreground ${className}`}
+        className={`relative w-full rounded-xl p-6 shadow-xl bg-card text-card-foreground ${className ?? "max-w-lg"}`}
       >
         <button
           onClick={onClose}

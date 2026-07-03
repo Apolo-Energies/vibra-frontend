@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-x-hidden bg-body overflow-y-auto px-6 pt-2 pb-6">
+        <main className="flex-1 overflow-x-hidden bg-body overflow-y-auto p-6">
           {children}
           {/* <ChatbotButton /> */}
         </main>

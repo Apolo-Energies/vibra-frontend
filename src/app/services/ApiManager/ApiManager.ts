@@ -8,7 +8,6 @@ export const ApiManager = axios.create({
   responseType: "json",
   withCredentials: true,
 });
-;
 export function setAuthToken(token: string): void {
   ApiManager.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
