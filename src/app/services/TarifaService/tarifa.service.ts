@@ -110,7 +110,7 @@ export const createOmieDistribution = async (
   token: string,
   payload: { tariffId: number; periodName: string }
 ): Promise<import("@/app/dashboard/Tarifas/interfaces/tarifa.interface").OmieDistribution> => {
-  const res = await ApiManager.post("/omiedistribution", payload, auth(token));
+  const res = await ApiManager.post("/omie-distribution", payload, auth(token));
   return res.data?.result ?? res.data;
 };
 
@@ -120,7 +120,7 @@ export const createBoePower = async (
   token: string,
   payload: { tariffId: number }
 ): Promise<import("@/app/dashboard/Tarifas/interfaces/tarifa.interface").BoePower> => {
-  const res = await ApiManager.post("/boepower", payload, auth(token));
+  const res = await ApiManager.post("/boe-power", payload, auth(token));
   return res.data?.result ?? res.data;
 };
 
