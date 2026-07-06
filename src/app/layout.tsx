@@ -5,6 +5,7 @@ import { ThemeProviderClient } from "@/components/providers/ThemeProviderClient"
 import { Provider } from "@/components/providers/Provider";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import { Alert } from "@/components/ui/Alert";
+import { auth } from "@/auth.config";
 
 
 const poppins = Poppins({
@@ -18,15 +19,17 @@ export const metadata: Metadata = {
   description: "Portal de colaboradores",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <Provider>
+        <Provider session={session}>
           <ThemeProviderClient>
             {children}
             <Alert />

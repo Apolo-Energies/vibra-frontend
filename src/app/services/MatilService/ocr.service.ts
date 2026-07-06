@@ -16,7 +16,6 @@ export const subirYProcesarDocumento = async (token :string, file: File, nombre:
 
     return response.data;
   } catch (error) {
-    console.error("Error al subir y procesar documento:", error);
     throw error;
   }
 };
