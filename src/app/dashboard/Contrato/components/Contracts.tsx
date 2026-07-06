@@ -58,8 +58,7 @@ export const Contracts = () => {
             setFileId(resultados[0]?.result?.id || null);
             setOpenModal(true);
             showAlert("Documentos procesados correctamente.", "success");
-        } catch (error) {
-            console.error("Error al analizar documento:", error);
+        } catch {
             showAlert("Error al procesar los documentos.", "error");
         } finally {
             setLoading(false);

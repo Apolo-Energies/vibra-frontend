@@ -19,18 +19,12 @@ export default function AuthPage() {
   }, [errorMessage]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-blue-50 to-blue-100 px-4">
-      <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 space-y-6 relative">
-        {/* Encabezado con icono */}
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-            🔑
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 text-center mb-2">
+    <div className="flex items-center justify-center min-h-screen bg-body px-4">
+      <div className="w-full max-w-sm bg-card border border-border rounded-2xl shadow-xl p-8 space-y-6 relative">
+        <h1 className="text-2xl font-semibold text-foreground text-center mb-2">
           Acceso al Comparador
         </h1>
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-center text-sm text-muted-foreground mb-4">
           Ingresa tu código de acceso para continuar
         </p>
 
@@ -38,7 +32,7 @@ export default function AuthPage() {
           <div>
             <label
               htmlFor="accessCode"
-              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium mb-1 text-foreground"
             >
               Código de acceso
             </label>
@@ -49,7 +43,7 @@ export default function AuthPage() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Introduce tu código"
-              className="w-full px-3 py-2 text-sm rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
+              className="w-full px-3 py-2 text-sm rounded-lg border bg-input border-border text-foreground placeholder-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring focus:ring-opacity-50 transition-all duration-200"
               required
             />
           </div>
@@ -59,13 +53,13 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full text-sm font-medium cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-800 flex items-center justify-center"
+            className="w-full text-sm font-medium cursor-pointer bg-primary hover:opacity-90 text-primary-foreground py-2 px-4 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-ring focus:ring-opacity-50 active:opacity-80 flex items-center justify-center"
           >
-            {isPending ? <MoonLoader size={20} color="#fff" /> : "Entrar"}
+            {isPending ? <MoonLoader size={20} color="currentColor" /> : "Entrar"}
           </button>
 
           {errorMessage && (
-            <p className="text-red-500 text-sm mt-1 text-center">{errorMessage}</p>
+            <p className="text-destructive text-sm mt-1 text-center">{errorMessage}</p>
           )}
         </form>
       </div>

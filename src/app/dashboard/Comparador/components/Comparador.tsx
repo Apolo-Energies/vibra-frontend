@@ -9,12 +9,15 @@ import { useLoadingStore } from "@/app/store/ui/loading.store";
 import { useAlertStore } from "@/app/store/ui/alert.store";
 import { subirYProcesarDocumento } from "@/app/services/MatilService/ocr.service";
 import { OcrData } from "../interfaces/matilData";
-import { useSession } from "next-auth/react";
 import { getTipoArchivo } from "@/utils/typeFile";
 import { useTariffStore } from "@/app/store/tariff/tariff.store";
 import { getTariffs } from "@/app/services/TarifaService/tarifa.service";
 
-export const Comparador = () => {
+interface Props {
+  token: string;
+}
+
+export const Comparador = ({ token }: Props) => {
   const [matilData, setMatilData] = useState<unknown | null>(null);
   const [fileId, setFileId] = useState<string | null>(null);
   const [file, setFile] = useState<File | string | null>(null);
@@ -22,9 +25,7 @@ export const Comparador = () => {
 
   const { setLoading } = useLoadingStore();
   const { showAlert } = useAlertStore();
-  const { data: session } = useSession();
   const { tariffs, setTariffs } = useTariffStore();
-  const token = session?.user?.token;
 
   useEffect(() => {
     if (!token || tariffs.length > 0) return;
@@ -46,20 +47,13 @@ export const Comparador = () => {
       const tipo = getTipoArchivo(file);
       const nombre = file.name.split(".")[0];
 
-      if (!token) {
-        showAlert("No se encontró el token de autenticación.", "error");
-        setLoading(false);
-        return;
-      }
-
       const resultado = await subirYProcesarDocumento(token, file, nombre, tipo);
 
       setMatilData(resultado?.ocrData);
       setFileId(resultado?.fileId);
       setOpenModal(true);
       showAlert("Documento procesado correctamente.", "success");
-    } catch (error) {
-      console.error("Error al analizar documento:", error);
+    } catch {
       showAlert("Error al procesar el documento.", "error");
     } finally {
       setLoading(false);
@@ -82,7 +76,7 @@ export const Comparador = () => {
         onClose={() => setOpenModal(false)}
         matilData={matilData as OcrData | undefined}
         fileId={fileId || ""}
-        token={session?.user.token || ""}
+        token={token}
       />
     </div>
   );

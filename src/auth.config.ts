@@ -25,7 +25,6 @@ export const authConfig: NextAuthConfig = {
           // console.log("response: ", response)
 
           if (!response || response.status !== 200) {
-            console.error("Credenciales incorrectas: ", response);
             return null;
           }
 
@@ -40,8 +39,7 @@ export const authConfig: NextAuthConfig = {
             role: claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ?? claims.role ?? "user",
             token: jwt,
           };
-        } catch (error) {
-          console.error("Error al autenticar:", error);
+        } catch {
           return null; // Asegurarse de que no se cree una sesión si hay error
         }
       },

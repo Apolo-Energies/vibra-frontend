@@ -197,8 +197,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       };
 
       if (type === "pdf") await downloadPDF(token, exportData);
-    } catch (error) {
-      console.error("Error al descargar:", error);
+    } catch {
+      // error silencioso — el usuario ya ve el resultado fallido
     }
   };
 
