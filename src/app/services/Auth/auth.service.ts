@@ -37,8 +37,6 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
       { withCredentials: false }
     );
 
-    console.log("Login response:", response);
-
     return {
       isSuccess: true,
       displayMessage: "Login exitoso",
@@ -47,9 +45,7 @@ export const userLogin = async (accessCode: string): Promise<ApiResponse<unknown
       status: response.status,
     };
   } catch (error) {
-    console.error("Login error:", error);
     if (axios.isAxiosError(error)) {
-      console.error("Login error response body:", JSON.stringify(error.response?.data));
       const errorMsg = error.response?.data?.error ?? error.response?.data?.message ?? "Unknown error";
       return {
         isSuccess: false,

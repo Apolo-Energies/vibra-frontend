@@ -1,36 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { sidebarItems } from "@/constants/SidebarItems";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
 
-export const SidebarContent = () => {
+interface Props {
+  allowedUrls: string[];
+}
+
+export const SidebarContent = ({ allowedUrls }: Props) => {
   const pathname = usePathname();
-  const { data: session, update } = useSession();
-  const [sessionUpdated, setSessionUpdated] = useState(false);
-
-  useEffect(() => {
-    if (session && !sessionUpdated) {
-      update();
-      setSessionUpdated(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionUpdated]);
-
-  const userRole = session?.user.role || "";
-
-  const itemsToRender = sidebarItems.filter((item) =>
-    item.roles.includes(userRole)
-  );
+  const items = sidebarItems.filter((item) => allowedUrls.includes(item.url));
 
   return (
     <div className="w-64 bg-card border-r border-border h-full flex flex-col">
       {/* Nav items */}
       <nav className="flex-1 px-3 pt-6 overflow-y-auto">
-        {itemsToRender.map((item, index) => {
+        {items.map((item, index) => {
           const isSelected = pathname === item.url;
           return (
             <Link href={item.url} key={index}>

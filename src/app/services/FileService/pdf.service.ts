@@ -32,7 +32,6 @@ export const downloadPDF = async (token: string, data: File) => {
   
       return true; 
     } catch (error) {
-      console.error("Error al generar/descargar PDF:", error);
       throw error;
     }
   };
