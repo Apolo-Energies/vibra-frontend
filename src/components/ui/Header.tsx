@@ -32,7 +32,7 @@ export const Header = () => {
         </Button>
         <div>
           <h1 className="text-xl sm:text-lg md:text-xl font-semibold text-foreground">
-            {session?.user.id === "vibra-id" ? "VIBRA ENERGIES" : "TELKES ENERGIES"}
+            {session?.user.id === "vibra-id" ? "VIBRA ENERGIES" : "VIBRA ENERGIES"}
           </h1>
         </div>
 
