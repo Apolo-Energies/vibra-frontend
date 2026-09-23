@@ -3,6 +3,7 @@ import { CalcularComisionParams } from "./commission.types";
 const round3 = (n: number) => Math.round(n * 1000) / 1000;
 
 const SNAP_PRODUCTS = new Set(["Fijo Snap Mini", "Fijo Snap", "Fijo Snap Maxi"]);
+export const COMISION_FIJA_VIBRA = 100;
 
 export const calculateComisionFunction = ({
   matilData,
@@ -12,6 +13,10 @@ export const calculateComisionFunction = ({
   productoSeleccionado,
 }: CalcularComisionParams): number => {
   if (!matilData?.energia || !matilData?.potencia) return 0;
+
+  if (productoSeleccionado === "Vibra") {
+    return COMISION_FIJA_VIBRA;
+  }
 
   if (SNAP_PRODUCTS.has(productoSeleccionado)) {
     return comisionEnergia;
