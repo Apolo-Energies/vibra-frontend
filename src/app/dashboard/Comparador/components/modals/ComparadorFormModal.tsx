@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FileDown, Zap } from "lucide-react";
+import { FileDown, Loader2, Zap } from "lucide-react";
 import { Dialog } from "@/components/Dialogs/Dialog";
 import { Button } from "@/components/buttons/button";
 import { Slider } from "@/components/ui/Slider";
@@ -64,6 +64,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
   const [feePotencia, setFeePotencia] = useState([0]);
   const [resultadoFactura, setResultadoFactura] = useState<FacturaResult>();
   const [preciosOpen, setPreciosOpen] = useState(true);
+  const [descargandoPdf, setDescargandoPdf] = useState(false);
 
   const precioMedioOmieInput = Number(watch("precioMedio")) || 20;
 
@@ -135,6 +136,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     : [];
 
   const handleDownloadFile = async (type: "pdf" | "excel") => {
+    if (type === "pdf") setDescargandoPdf(true);
     try {
       const dias = matilData?.periodo_facturacion?.numero_dias;
       const periodos = resultadoFactura?.periodos || [];
@@ -209,6 +211,8 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
       if (type === "pdf") await downloadPDF(token, exportData);
     } catch {
       // error silencioso — el usuario ya ve el resultado fallido
+    } finally {
+      if (type === "pdf") setDescargandoPdf(false);
     }
   };
 
@@ -381,10 +385,20 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
           <button
             type="button"
             onClick={() => handleDownloadFile("pdf")}
-            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-[#12AFF0] text-[#17181A] text-sm font-semibold hover:bg-[#10a0d8] transition-colors"
+            disabled={descargandoPdf}
+            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-[#12AFF0] text-[#17181A] text-sm font-semibold hover:bg-[#10a0d8] transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <FileDown size={15} />
-            Descargar PDF
+            {descargandoPdf ? (
+              <>
+                <Loader2 size={15} className="animate-spin" />
+                Generando PDF...
+              </>
+            ) : (
+              <>
+                <FileDown size={15} />
+                Descargar PDF
+              </>
+            )}
           </button>
         </div>
       </div>
