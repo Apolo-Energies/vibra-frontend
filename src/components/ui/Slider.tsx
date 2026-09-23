@@ -7,6 +7,7 @@ interface Props {
   max?: number;
   step?: number;
   className?: string;
+  disabled?: boolean;
 }
 
 export const Slider = ({
@@ -16,6 +17,7 @@ export const Slider = ({
   max = 100,
   step = 1,
   className = "",
+  disabled = false,
 }: Props) => {
   const percentage = ((value[0] - min) / (max - min)) * 100;
 
@@ -26,8 +28,10 @@ export const Slider = ({
       max={max}
       step={step}
       value={value[0]}
+      disabled={disabled}
       onChange={(e) => onValueChange([Number(e.target.value)])}
       className={`w-full appearance-none h-2 rounded-full outline-none transition-colors bg-gray-200
+        disabled:opacity-40 disabled:cursor-not-allowed
         [&::-webkit-slider-thumb]:appearance-none
         [&::-webkit-slider-thumb]:w-4
         [&::-webkit-slider-thumb]:h-4

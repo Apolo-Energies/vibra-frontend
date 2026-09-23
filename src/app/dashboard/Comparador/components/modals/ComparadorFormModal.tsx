@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/Slider";
 import { useForm } from "react-hook-form";
 import { OcrData } from "../../interfaces/matilData";
 import { useCommissionStore } from "@/app/store/commission/commission.store";
+import { COMISION_FIJA_VIBRA } from "@/app/store/commission/commission.helpers";
 import { useCalculatorStore } from "@/app/store/calculator/calculator.stores";
 import { FacturaResult, Periodo } from "@/app/store/calculator/calculator.types";
 import { downloadPDF } from "@/app/services/FileService/pdf.service";
@@ -71,6 +72,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
 
   const selectedProduct = availableProducts.find(p => p.id === productoId) ?? availableProducts[0] ?? null;
   const comisionEnergia = (selectedProduct?.commissionPercentage ?? 65) / 100;
+  const feeBloqueado = selectedProduct?.name === "Vibra";
 
   // Seleccionar primer producto cuando cambia la tarifa
   useEffect(() => {
@@ -79,6 +81,14 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tariffObj?.id]);
+
+  // Vibra: comisión fija, sin ajustadores de fee
+  useEffect(() => {
+    if (feeBloqueado) {
+      setFeeEnergia([0]);
+      setFeePotencia([0]);
+    }
+  }, [feeBloqueado]);
 
   // Comisión
   useEffect(() => {
@@ -282,7 +292,7 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               {feeEnergia[0]}
             </span>
           </div>
-          <Slider value={feeEnergia} onValueChange={setFeeEnergia} max={50} min={0} step={1} />
+          <Slider value={feeEnergia} onValueChange={setFeeEnergia} max={50} min={0} step={1} disabled={feeBloqueado} />
         </div>
 
         {/* Fee Potencia */}
@@ -295,8 +305,14 @@ export const ComparadorFormModal = ({ open, onClose, matilData, fileId, token }:
               {feePotencia[0]}
             </span>
           </div>
-          <Slider value={feePotencia} onValueChange={setFeePotencia} max={25} min={0} step={1} />
+          <Slider value={feePotencia} onValueChange={setFeePotencia} max={25} min={0} step={1} disabled={feeBloqueado} />
         </div>
+
+        {feeBloqueado && (
+          <p className="text-xs text-[#a1a1aa] -mt-2">
+            Vibra: ajustadores de fee bloqueados, comisión fija de {COMISION_FIJA_VIBRA}€.
+          </p>
+        )}
 
         {/* Resultados */}
         <div className="grid grid-cols-2 gap-3">
